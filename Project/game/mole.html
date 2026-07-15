@@ -1,0 +1,59 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>두더지 게임 · 픽셀 도트 월드</title>
+  <script>
+    document.documentElement.setAttribute('data-theme', localStorage.getItem('pixelsite-theme') || 'dark');
+  </script>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Press+Start+2P&family=Silkscreen:wght@400;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="../styles.css">
+</head>
+<body>
+  <div class="page">
+    <header class="site-header">
+      <a href="index.html" class="pixel-btn back-btn">◀ 목록으로</a>
+      <h1 class="page-title">두더지 게임</h1>
+      <button id="theme-toggle" class="pixel-btn theme-toggle" aria-label="테마 전환"></button>
+    </header>
+
+    <div class="page-body">
+      <div class="game-hud">
+        <div>
+          <div class="stat-label">점수</div>
+          <div id="score">0</div>
+        </div>
+        <div>
+          <div class="stat-label">남은 시간</div>
+          <div id="time-left">30</div>
+        </div>
+        <div>
+          <div class="stat-label">최고 기록</div>
+          <div id="high-score">0</div>
+        </div>
+      </div>
+
+      <div class="mole-field">
+        <div class="mole-grid" id="mole-grid"></div>
+
+        <div class="game-overlay" id="game-overlay">
+          <div class="pixel-panel">
+            <h2>게임 종료!</h2>
+            <div id="final-score"></div>
+            <div id="new-record" class="new-record"></div>
+            <button class="pixel-btn" id="restart-btn">다시하기</button>
+          </div>
+        </div>
+      </div>
+
+      <button class="pixel-btn pixel-btn--lg" id="start-btn">게임 시작</button>
+    </div>
+  </div>
+
+  <script src="../theme.js"></script>
+  <script src="mole.js"></script>
+</body>
+</html>

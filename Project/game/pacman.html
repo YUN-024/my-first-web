@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>팩맨 · 픽셀 도트 월드</title>
+  <script>
+    document.documentElement.setAttribute('data-theme', localStorage.getItem('pixelsite-theme') || 'dark');
+  </script>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Press+Start+2P&family=Silkscreen:wght@400;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="../styles.css">
+</head>
+<body>
+  <div class="page">
+    <header class="site-header">
+      <a href="index.html" class="pixel-btn back-btn">◀ 목록으로</a>
+      <h1 class="page-title">팩맨</h1>
+      <button id="theme-toggle" class="pixel-btn theme-toggle" aria-label="테마 전환"></button>
+    </header>
+
+    <div class="page-body">
+      <div class="game-hud">
+        <div>
+          <div class="stat-label">점수</div>
+          <div id="score">0</div>
+        </div>
+        <div>
+          <div class="stat-label">라이프</div>
+          <div id="lives">❤❤❤</div>
+        </div>
+        <div>
+          <div class="stat-label">파워업</div>
+          <div id="power-timer">-</div>
+        </div>
+        <div>
+          <div class="stat-label">최고 기록</div>
+          <div id="high-score">0</div>
+        </div>
+      </div>
+
+      <div class="pacman-layout">
+        <div class="pacman-field">
+          <canvas id="pacman-canvas" width="456" height="456"></canvas>
+
+          <div class="game-overlay" id="game-overlay">
+            <div class="pixel-panel">
+              <h2 id="result-title">게임 종료!</h2>
+              <div id="final-score"></div>
+              <div id="new-record" class="new-record"></div>
+              <button class="pixel-btn" id="restart-btn">다시하기</button>
+            </div>
+          </div>
+        </div>
+
+        <p class="pacman-hint">방향키 또는 WASD로 이동 · 모바일에서는 화면을 스와이프하세요 · 큰 파워 젤리를 먹으면 잠시 유령을 잡을 수 있어요</p>
+        <button class="pixel-btn pixel-btn--lg" id="start-btn">게임 시작</button>
+      </div>
+    </div>
+  </div>
+
+  <script src="../theme.js"></script>
+  <script src="pacman.js"></script>
+</body>
+</html>

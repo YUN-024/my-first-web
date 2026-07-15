@@ -1,0 +1,639 @@
+/* ==========================================================================
+   Reset + base
+   ========================================================================== */
+*, *::before, *::after {
+  box-sizing: border-box;
+  border-radius: 0 !important;
+}
+
+html, body {
+  margin: 0;
+  padding: 0;
+}
+
+img, canvas {
+  image-rendering: pixelated;
+  image-rendering: crisp-edges;
+}
+
+/* ==========================================================================
+   Theme variables — dark is the default (matches first-visit requirement)
+   ========================================================================== */
+:root {
+  --bg: #10101c;
+  --bg-panel: #1c1c30;
+  --text: #f2f2f2;
+  --text-muted: #9a9ac0;
+  --accent: #ffd447;
+  --accent-2: #ff5da2;
+  --border: #f2f2f2;
+  --shadow: #000000;
+  --button-bg: #2b2b45;
+  --button-bg-hover: #3a3a5c;
+  --grid-line: rgba(255, 255, 255, 0.15);
+  --danger: #ff5555;
+  --success: #55ff9d;
+}
+
+:root[data-theme="light"] {
+  --bg: #f7f7fb;
+  --bg-panel: #ffffff;
+  --text: #1a1a2e;
+  --text-muted: #55556b;
+  --border: #1a1a2e;
+  --shadow: #1a1a2e;
+  --button-bg: #e4e4f0;
+  --button-bg-hover: #d0d0e8;
+  --grid-line: rgba(0, 0, 0, 0.15);
+}
+
+body {
+  min-height: 100vh;
+  background: var(--bg);
+  color: var(--text);
+  font-family: 'Silkscreen', monospace;
+  transition: background-color 0.15s, color 0.15s;
+}
+
+h1, h2, h3 {
+  font-family: 'Press Start 2P', monospace;
+  line-height: 1.6;
+}
+
+a {
+  color: inherit;
+  text-decoration: none;
+}
+
+/* ==========================================================================
+   Shared pixel-art components
+   ========================================================================== */
+.pixel-btn {
+  display: inline-block;
+  font-family: 'Press Start 2P', monospace;
+  font-size: 0.7rem;
+  line-height: 1.5;
+  color: var(--text);
+  background: var(--button-bg);
+  border: 4px solid var(--border);
+  padding: 12px 16px;
+  cursor: pointer;
+  box-shadow:
+    4px 4px 0 0 var(--shadow),
+    inset -4px -4px 0 0 rgba(0, 0, 0, 0.25),
+    inset 4px 4px 0 0 rgba(255, 255, 255, 0.15);
+}
+
+.pixel-btn:hover {
+  background: var(--button-bg-hover);
+}
+
+.pixel-btn:active {
+  transform: translate(4px, 4px);
+  box-shadow:
+    inset -4px -4px 0 0 rgba(0, 0, 0, 0.25),
+    inset 4px 4px 0 0 rgba(255, 255, 255, 0.15);
+}
+
+.pixel-btn--lg {
+  font-size: 0.85rem;
+  padding: 18px 22px;
+}
+
+.pixel-panel {
+  background: var(--bg-panel);
+  border: 4px solid var(--border);
+  box-shadow: 6px 6px 0 0 var(--shadow);
+  padding: 20px;
+}
+
+/* ==========================================================================
+   Site header (shared across all pages)
+   ========================================================================== */
+.site-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  padding: 16px 20px;
+}
+
+.site-header .page-title {
+  font-size: 0.9rem;
+  margin: 0;
+  text-align: center;
+  flex: 1;
+}
+
+.back-btn {
+  font-size: 0.65rem;
+}
+
+.theme-toggle {
+  font-size: 1rem;
+  padding: 10px 14px;
+  line-height: 1;
+}
+
+/* ==========================================================================
+   Layout helpers
+   ========================================================================== */
+.page {
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+}
+
+.page-body {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 20px;
+  gap: 24px;
+}
+
+/* ==========================================================================
+   Landing page
+   ========================================================================== */
+.hero {
+  position: relative;
+  flex: 1;
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: flex-end;
+  padding-bottom: 48px;
+}
+
+.stars {
+  position: absolute;
+  inset: 0;
+  z-index: 0;
+  pointer-events: none;
+}
+
+.star {
+  position: absolute;
+  width: 3px;
+  height: 3px;
+  background: var(--text);
+  animation-name: twinkle;
+  animation-timing-function: ease-in-out;
+  animation-iteration-count: infinite;
+}
+
+@keyframes twinkle {
+  0%, 100% { opacity: 0.2; transform: scale(1); }
+  50% { opacity: 1; transform: scale(1.4); }
+}
+
+.clouds {
+  position: absolute;
+  inset: 0;
+  z-index: 0;
+  pointer-events: none;
+  overflow: hidden;
+}
+
+.cloud {
+  position: absolute;
+  left: -140px;
+  width: 100px;
+  height: 32px;
+  background: var(--text-muted);
+  opacity: 0.5;
+  animation-name: drift;
+  animation-timing-function: linear;
+  animation-iteration-count: infinite;
+}
+
+.cloud::before,
+.cloud::after {
+  content: "";
+  position: absolute;
+  background: var(--text-muted);
+}
+
+.cloud::before {
+  width: 48px;
+  height: 20px;
+  left: 16px;
+  top: -16px;
+}
+
+.cloud::after {
+  width: 36px;
+  height: 16px;
+  left: 52px;
+  top: -10px;
+}
+
+@keyframes drift {
+  from { transform: translateX(0) scale(var(--cloud-scale, 1)); }
+  to { transform: translateX(calc(100vw + 240px)) scale(var(--cloud-scale, 1)); }
+}
+
+.nav-buttons {
+  position: relative;
+  z-index: 1;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 20px;
+  justify-content: center;
+}
+
+.nav-buttons a {
+  text-align: center;
+}
+
+/* ==========================================================================
+   Avatar page
+   ========================================================================== */
+.avatar-layout {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 24px;
+  align-items: flex-start;
+  justify-content: center;
+  max-width: 900px;
+}
+
+.avatar-stage-panel {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 16px;
+}
+
+#avatar-canvas {
+  background: #ffffff;
+  border: 4px solid var(--border);
+  box-shadow: 6px 6px 0 0 var(--shadow);
+  width: 220px;
+  height: 330px;
+}
+
+.avatar-controls {
+  min-width: 320px;
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+.category-tabs {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+
+.category-tabs .pixel-btn {
+  font-size: 0.6rem;
+  padding: 8px 10px;
+}
+
+.category-tabs .pixel-btn.active {
+  background: var(--accent);
+  color: #10101c;
+}
+
+.swatch-row {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+}
+
+.swatch {
+  width: 56px;
+  height: 76px;
+  padding: 4px;
+  border: 3px solid var(--border);
+  background: var(--button-bg);
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.swatch.active {
+  outline: 3px solid var(--accent);
+  outline-offset: 2px;
+}
+
+.swatch canvas {
+  width: 40px;
+  height: 60px;
+}
+
+.color-picker-row {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  font-size: 0.75rem;
+}
+
+.color-picker-row input[type="color"] {
+  width: 40px;
+  height: 32px;
+  border: 3px solid var(--border);
+  padding: 0;
+  background: none;
+  cursor: pointer;
+}
+
+/* ==========================================================================
+   Paint page
+   ========================================================================== */
+.paint-layout {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 24px;
+  align-items: flex-start;
+  justify-content: center;
+}
+
+.canvas-wrap {
+  position: relative;
+  width: 512px;
+  height: 512px;
+  border: 4px solid var(--border);
+  box-shadow: 6px 6px 0 0 var(--shadow);
+}
+
+#paint-canvas {
+  position: absolute;
+  inset: 0;
+  width: 512px;
+  height: 512px;
+  background: #ffffff;
+  cursor: crosshair;
+}
+
+.grid-overlay {
+  position: absolute;
+  inset: 0;
+  width: 512px;
+  height: 512px;
+  pointer-events: none;
+  background-image:
+    repeating-linear-gradient(to right, var(--grid-line) 0 1px, transparent 1px 16px),
+    repeating-linear-gradient(to bottom, var(--grid-line) 0 1px, transparent 1px 16px);
+}
+
+.grid-overlay.hidden {
+  display: none;
+}
+
+.paint-controls {
+  min-width: 260px;
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+.palette-row {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+
+.color-swatch {
+  width: 28px;
+  height: 28px;
+  border: 3px solid var(--border);
+  cursor: pointer;
+}
+
+.color-swatch.active {
+  outline: 3px solid var(--accent);
+  outline-offset: 2px;
+}
+
+.brush-row, .control-row {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  flex-wrap: wrap;
+}
+
+.brush-row .pixel-btn {
+  font-size: 0.65rem;
+  padding: 8px 12px;
+}
+
+.brush-row .pixel-btn.active {
+  background: var(--accent);
+  color: #10101c;
+}
+
+/* ==========================================================================
+   Game page
+   ========================================================================== */
+.game-hud {
+  display: flex;
+  gap: 24px;
+  font-size: 0.8rem;
+}
+
+.game-hud .stat-label {
+  color: var(--text-muted);
+  font-size: 0.65rem;
+}
+
+.mole-field,
+.pacman-field {
+  position: relative;
+}
+
+.mole-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 100px);
+  grid-template-rows: repeat(3, 100px);
+  gap: 16px;
+}
+
+.hole {
+  position: relative;
+  background: var(--bg-panel);
+  border: 4px solid var(--border);
+  box-shadow: 6px 6px 0 0 var(--shadow);
+  overflow: hidden;
+  cursor: pointer;
+}
+
+.mole {
+  position: absolute;
+  left: 10px;
+  right: 10px;
+  bottom: 0;
+  height: 70%;
+  background: #a0622d;
+  border: 3px solid var(--border);
+  transform: translateY(100%);
+  transition: transform 0.15s steps(3);
+}
+
+.mole::before {
+  content: "";
+  position: absolute;
+  top: 14px;
+  left: 14px;
+  width: 8px;
+  height: 8px;
+  background: #1a1a2e;
+  box-shadow: 24px 0 0 #1a1a2e;
+}
+
+.mole.up {
+  transform: translateY(0);
+}
+
+.game-overlay {
+  position: absolute;
+  inset: 0;
+  display: none;
+  align-items: center;
+  justify-content: center;
+  background: rgba(0, 0, 0, 0.65);
+}
+
+.game-overlay.visible {
+  display: flex;
+}
+
+.game-overlay .pixel-panel {
+  text-align: center;
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+  align-items: center;
+}
+
+.new-record {
+  color: var(--accent);
+  font-size: 0.75rem;
+}
+
+/* ==========================================================================
+   Game selection page
+   ========================================================================== */
+.game-select-grid {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 24px;
+  justify-content: center;
+}
+
+.game-select-card {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 16px;
+  width: 200px;
+  text-align: center;
+  cursor: pointer;
+}
+
+.game-select-card:hover {
+  background: var(--button-bg-hover);
+}
+
+.game-select-thumb {
+  width: 100%;
+  height: 110px;
+  background: var(--bg);
+  border: 3px solid var(--border);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+  position: relative;
+}
+
+.mole-thumb .thumb-hole {
+  width: 28px;
+  height: 28px;
+  background: #a0622d;
+  border: 3px solid var(--border);
+}
+
+.thumb-pacman {
+  width: 32px;
+  height: 32px;
+  background: #ffd447;
+  border: 3px solid var(--border);
+}
+
+.thumb-dot {
+  width: 8px;
+  height: 8px;
+  background: #ffd447;
+}
+
+.chess-thumb {
+  display: grid;
+  grid-template-columns: repeat(2, 28px);
+  grid-template-rows: repeat(2, 28px);
+  border: 3px solid var(--border);
+}
+
+.thumb-chess-square {
+  width: 28px;
+  height: 28px;
+  background: #2e2e42;
+}
+
+.thumb-chess-square.light {
+  background: #e4e4f0;
+}
+
+.game-select-label {
+  font-family: 'Press Start 2P', monospace;
+  font-size: 0.7rem;
+}
+
+/* ==========================================================================
+   Pacman page
+   ========================================================================== */
+.pacman-layout {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 16px;
+}
+
+#pacman-canvas {
+  background: #000000;
+  border: 4px solid var(--border);
+  box-shadow: 6px 6px 0 0 var(--shadow);
+  max-width: 100%;
+}
+
+.pacman-hint {
+  color: var(--text-muted);
+  font-size: 0.65rem;
+  text-align: center;
+}
+
+/* ==========================================================================
+   Responsive
+   ========================================================================== */
+@media (max-width: 420px) {
+  .mole-grid {
+    grid-template-columns: repeat(3, 80px);
+    grid-template-rows: repeat(3, 80px);
+    gap: 10px;
+  }
+
+  .canvas-wrap, #paint-canvas, .grid-overlay {
+    width: 320px;
+    height: 320px;
+  }
+
+  #avatar-canvas {
+    width: 160px;
+    height: 240px;
+  }
+}

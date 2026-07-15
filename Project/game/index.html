@@ -1,0 +1,59 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>미니게임 선택 · 픽셀 도트 월드</title>
+  <script>
+    document.documentElement.setAttribute('data-theme', localStorage.getItem('pixelsite-theme') || 'dark');
+  </script>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Press+Start+2P&family=Silkscreen:wght@400;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="../styles.css">
+</head>
+<body>
+  <div class="page">
+    <header class="site-header">
+      <a href="../index.html" class="pixel-btn back-btn">◀ 처음으로</a>
+      <h1 class="page-title">미니게임 선택</h1>
+      <button id="theme-toggle" class="pixel-btn theme-toggle" aria-label="테마 전환"></button>
+    </header>
+
+    <div class="page-body">
+      <div class="game-select-grid">
+        <a class="game-select-card pixel-panel" href="mole.html">
+          <div class="game-select-thumb mole-thumb" aria-hidden="true">
+            <div class="thumb-hole"></div>
+            <div class="thumb-hole"></div>
+            <div class="thumb-hole"></div>
+          </div>
+          <div class="game-select-label">🔨 두더지 게임</div>
+        </a>
+
+        <a class="game-select-card pixel-panel" href="pacman.html">
+          <div class="game-select-thumb pacman-thumb" aria-hidden="true">
+            <div class="thumb-pacman"></div>
+            <div class="thumb-dot"></div>
+            <div class="thumb-dot"></div>
+            <div class="thumb-dot"></div>
+          </div>
+          <div class="game-select-label">👻 팩맨</div>
+        </a>
+
+        <a class="game-select-card pixel-panel" href="chess.html">
+          <div class="game-select-thumb chess-thumb" aria-hidden="true">
+            <div class="thumb-chess-square"></div>
+            <div class="thumb-chess-square light"></div>
+            <div class="thumb-chess-square light"></div>
+            <div class="thumb-chess-square"></div>
+          </div>
+          <div class="game-select-label">♟ 체스</div>
+        </a>
+      </div>
+    </div>
+  </div>
+
+  <script src="../theme.js"></script>
+</body>
+</html>
