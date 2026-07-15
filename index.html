@@ -7,22 +7,20 @@
 <script src="js/theme.js"></script>
 <link rel="stylesheet" href="css/style.css">
 </head>
-<body>
-  <div class="topbar">
-    <a class="logo" href="index.html">PIXEL LAB</a>
-    <button id="theme-toggle" class="theme-toggle">LIGHT</button>
-  </div>
+<body class="landing">
+  <header class="site-header">
+    <span class="spacer"></span>
+    <button id="theme-toggle" class="theme-toggle" aria-label="테마 전환"></button>
+  </header>
 
-  <div class="container">
-    <div class="hero">
+  <div class="hero-full">
+    <canvas id="hero-canvas"></canvas>
+    <div class="hero-content">
       <h1>PIXEL LAB</h1>
-      <canvas id="hero-canvas" width="480" height="220"></canvas>
-    </div>
-
-    <div class="menu-grid">
-      <a class="btn btn-cyan" href="avatar.html">① 아바타 만들기</a>
-      <a class="btn btn-pink" href="paint.html">② 도트 그림판</a>
-      <a class="btn btn-yellow" href="game.html">③ 미니게임</a>
+      <div class="menu-grid hero-menu">
+        <a class="btn btn-pink" href="paint.html">🎨 도트 그림판</a>
+        <a class="btn btn-yellow" href="game.html">🎮 미니게임</a>
+      </div>
     </div>
   </div>
 

@@ -8,7 +8,47 @@ const colorPicker = document.getElementById('color-picker');
 const brushSize = document.getElementById('brush-size');
 const brushSizeLabel = document.getElementById('brush-size-label');
 const gridToggle = document.getElementById('grid-toggle');
+const paletteRow = document.getElementById('palette-row');
+const pencilBtn = document.getElementById('tool-pencil');
+const eraserBtn = document.getElementById('tool-eraser');
 const GRID = 16; // logical pixel grid size in canvas units
+
+let tool = 'pencil'; // 'pencil' | 'eraser'
+
+function setTool(next) {
+  tool = next;
+  pencilBtn.classList.toggle('btn-cyan', tool === 'pencil');
+  eraserBtn.classList.toggle('btn-cyan', tool === 'eraser');
+}
+pencilBtn.addEventListener('click', () => setTool('pencil'));
+eraserBtn.addEventListener('click', () => setTool('eraser'));
+
+const PALETTE = [
+  '#4ce0d2', '#ff5da2', '#ffd23f',
+  '#000000', '#ffffff', '#9a9ac0',
+  '#ff5555', '#ff9d4d', '#55ff9d',
+  '#5da9ff', '#a06bd6', '#a0622d'
+];
+
+function buildPalette() {
+  PALETTE.forEach(color => {
+    const btn = document.createElement('button');
+    btn.type = 'button';
+    btn.className = 'color-swatch' + (color === colorPicker.value ? ' active' : '');
+    btn.style.background = color;
+    btn.addEventListener('click', () => {
+      colorPicker.value = color;
+      Array.from(paletteRow.children).forEach(c => c.classList.remove('active'));
+      btn.classList.add('active');
+    });
+    paletteRow.appendChild(btn);
+  });
+}
+buildPalette();
+
+colorPicker.addEventListener('input', () => {
+  Array.from(paletteRow.children).forEach(c => c.classList.remove('active'));
+});
 
 let drawing = false;
 
@@ -54,7 +94,7 @@ function getPos(e) {
 
 function paintAt(x, y) {
   const size = parseInt(brushSize.value, 10); // fine-grained 1~10px thickness
-  ctx.fillStyle = colorPicker.value;
+  ctx.fillStyle = tool === 'eraser' ? '#ffffff' : colorPicker.value;
   ctx.fillRect(Math.round(x - size / 2), Math.round(y - size / 2), size, size);
 }
 

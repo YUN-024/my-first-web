@@ -8,26 +8,43 @@
 <link rel="stylesheet" href="css/style.css">
 </head>
 <body>
-  <div class="topbar">
-    <a class="logo" href="index.html">PIXEL LAB</a>
-    <button id="theme-toggle" class="theme-toggle">LIGHT</button>
-  </div>
+  <header class="site-header">
+    <a href="index.html" class="btn back-btn">◀ 처음으로</a>
+    <h1 class="page-title">미니게임 선택</h1>
+    <button id="theme-toggle" class="theme-toggle" aria-label="테마 전환"></button>
+  </header>
 
   <div class="container">
-    <a class="back-link" href="index.html">&larr; 메인으로</a>
-    <h2>미니게임 선택</h2>
-
     <div class="menu-grid">
       <a class="card" href="game-mole.html" style="text-decoration:none;">
-        <h3 class="pixel-font" style="font-size:14px; color:var(--accent-cyan);">두더지 게임</h3>
+        <div class="game-select-thumb mole-thumb">
+          <div class="thumb-hole"></div>
+          <div class="thumb-hole"></div>
+          <div class="thumb-hole"></div>
+        </div>
+        <h3 class="pixel-font" style="font-size:14px; color:var(--accent-cyan);">🔨 두더지 게임</h3>
         <p>튀어나오는 두더지를 빠르게 클릭하세요.</p>
       </a>
       <a class="card" href="game-pacman.html" style="text-decoration:none;">
-        <h3 class="pixel-font" style="font-size:14px; color:var(--accent-pink);">팩맨</h3>
+        <div class="game-select-thumb pacman-thumb">
+          <div class="thumb-pacman"></div>
+          <div class="thumb-dot"></div>
+          <div class="thumb-dot"></div>
+          <div class="thumb-dot"></div>
+        </div>
+        <h3 class="pixel-font" style="font-size:14px; color:var(--accent-pink);">👻 팩맨</h3>
         <p>복잡한 미로에서 코인을 모으고 유령을 피하세요.</p>
       </a>
       <a class="card" href="game-chess.html" style="text-decoration:none;">
-        <h3 class="pixel-font" style="font-size:14px; color:var(--accent-yellow);">체스</h3>
+        <div class="game-select-thumb">
+          <div class="chess-thumb">
+            <div class="thumb-chess-square light"></div>
+            <div class="thumb-chess-square"></div>
+            <div class="thumb-chess-square"></div>
+            <div class="thumb-chess-square light"></div>
+          </div>
+        </div>
+        <h3 class="pixel-font" style="font-size:14px; color:var(--accent-yellow);">♟ 체스</h3>
         <p>도트 스타일 체스판에서 상대와 두뇌 대결.</p>
       </a>
     </div>

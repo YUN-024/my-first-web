@@ -4,6 +4,7 @@ const PIECE_GLYPH = {
 };
 
 let board, turn, castling, enPassant, selected, legalTargets, gameOver;
+let lastMove, capturedByWhite, capturedByBlack;
 
 function initBoard() {
   board = [
@@ -22,7 +23,12 @@ function initBoard() {
   selected = null;
   legalTargets = [];
   gameOver = false;
+  lastMove = null;
+  capturedByWhite = [];
+  capturedByBlack = [];
   document.getElementById('chess-message').textContent = '';
+  document.getElementById('chess-overlay').classList.remove('visible');
+  renderCaptured();
   render();
   updateTurnLabel();
 }
@@ -225,10 +231,12 @@ function isInCheck(color, state) {
 const boardEl = document.getElementById('chess-board');
 const turnLabel = document.getElementById('turn-label');
 const msgEl = document.getElementById('chess-message');
-const vsCpu = document.getElementById('vs-cpu');
+const vsCpu = { get checked() { return document.getElementById('mode-ai').checked; } };
 
 function render() {
   boardEl.innerHTML = '';
+  const state = { board, turn, castling, enPassant };
+  const checkedKingPos = isInCheck(turn, state) ? findKing(turn, board) : null;
   for (let r = 0; r < 8; r++) {
     for (let c = 0; c < 8; c++) {
       const sq = document.createElement('div');
@@ -243,10 +251,27 @@ function render() {
       if (legalTargets.some(m => m.r === r && m.c === c)) {
         sq.classList.add(board[r][c] ? 'capturable' : 'movable');
       }
+      if (lastMove && ((lastMove.from.r === r && lastMove.from.c === c) || (lastMove.to.r === r && lastMove.to.c === c))) {
+        sq.classList.add('lastmove');
+      }
+      if (checkedKingPos && checkedKingPos.r === r && checkedKingPos.c === c) {
+        sq.classList.add('in-check');
+      }
       sq.addEventListener('click', () => onSquareClick(r, c));
       boardEl.appendChild(sq);
     }
   }
+}
+
+function renderCaptured() {
+  document.getElementById('captured-white').textContent = capturedByWhite.map(p => PIECE_GLYPH[p]).join(' ');
+  document.getElementById('captured-black').textContent = capturedByBlack.map(p => PIECE_GLYPH[p]).join(' ');
+}
+
+function showChessOverlay(title, message) {
+  document.getElementById('chess-result-title').textContent = title;
+  document.getElementById('chess-result-message').textContent = message;
+  document.getElementById('chess-overlay').classList.add('visible');
 }
 
 function updateTurnLabel() {
@@ -284,18 +309,35 @@ function onSquareClick(r, c) {
   }
 }
 
-function doMove(from, to) {
+function capturedPieceOf(from, to) {
+  if (to.special === 'enpassant') return board[from.r][to.c];
+  return board[to.r][to.c];
+}
+
+function doMove(from, to, forcedPromo) {
   let promoChoice = null;
   if (to.special === 'promo') {
-    const choice = window.prompt('프로모션할 기물을 선택하세요 (Q, R, B, N)', 'Q');
-    promoChoice = choice && ['Q','R','B','N'].includes(choice.toUpperCase()) ? choice.toUpperCase() : 'Q';
+    if (forcedPromo) {
+      promoChoice = forcedPromo;
+    } else {
+      const choice = window.prompt('프로모션할 기물을 선택하세요 (Q, R, B, N)', 'Q');
+      promoChoice = choice && ['Q','R','B','N'].includes(choice.toUpperCase()) ? choice.toUpperCase() : 'Q';
+    }
+  }
+  const captured = capturedPieceOf(from, to);
+  if (captured) {
+    if (isWhite(captured)) capturedByBlack.push(captured);
+    else capturedByWhite.push(captured);
   }
   const state = { board, turn, castling, enPassant };
   const next = applyMove(state, from, to, promoChoice);
   board = next.board; turn = next.turn; castling = next.castling; enPassant = next.enPassant;
+  lastMove = { from, to };
+  renderCaptured();
   updateTurnLabel();
   checkGameEnd();
   if (!gameOver && turn === 'b' && vsCpu.checked) {
+    msgEl.textContent = 'AI 계산 중...';
     setTimeout(cpuMove, 400);
   }
 }
@@ -305,10 +347,11 @@ function checkGameEnd() {
   const check = isInCheck(turn, { board, turn, castling, enPassant });
   if (moves.length === 0) {
     gameOver = true;
+    msgEl.textContent = '';
     if (check) {
-      msgEl.textContent = '체크메이트! ' + (turn === 'w' ? '흑' : '백') + ' 승리';
+      showChessOverlay('체크메이트!', (turn === 'w' ? '흑' : '백') + ' 승리');
     } else {
-      msgEl.textContent = '스테일메이트 (무승부)';
+      showChessOverlay('스테일메이트', '무승부');
     }
   } else if (check) {
     msgEl.textContent = (turn === 'w' ? '백' : '흑') + ' 체크!';
@@ -317,15 +360,78 @@ function checkGameEnd() {
   }
 }
 
+// ---- simple negamax + alpha-beta AI (built entirely on the existing pure move functions above) ----
+const PIECE_VALUE = { p: 100, n: 300, b: 320, r: 500, q: 900, k: 0 };
+const CENTER = [
+  [0,0,0,0,0,0,0,0],
+  [0,1,1,1,1,1,1,0],
+  [0,1,2,2,2,2,1,0],
+  [0,1,2,3,3,2,1,0],
+  [0,1,2,3,3,2,1,0],
+  [0,1,2,2,2,2,1,0],
+  [0,1,1,1,1,1,1,0],
+  [0,0,0,0,0,0,0,0],
+];
+const SEARCH_DEPTH = 3;
+
+function evaluateMaterial(b) {
+  let score = 0;
+  for (let r = 0; r < 8; r++) {
+    for (let c = 0; c < 8; c++) {
+      const p = b[r][c];
+      if (!p) continue;
+      const v = PIECE_VALUE[p.toLowerCase()] + CENTER[r][c] * 4;
+      score += isWhite(p) ? v : -v;
+    }
+  }
+  return score;
+}
+
+function evaluateFor(b, color) {
+  const s = evaluateMaterial(b);
+  return color === 'w' ? s : -s;
+}
+
+function negamax(state, depth, alpha, beta) {
+  const moves = allLegalMoves(state.turn, state);
+  if (moves.length === 0) {
+    const kp = findKing(state.turn, state.board);
+    return isAttacked(kp.r, kp.c, opponent(state.turn), state.board) ? -100000 - depth : 0;
+  }
+  if (depth === 0) return evaluateFor(state.board, state.turn);
+  let best = -Infinity;
+  for (const mv of moves) {
+    const next = applyMove(state, mv.from, mv.to, 'Q');
+    const score = -negamax(next, depth - 1, -beta, -alpha);
+    if (score > best) best = score;
+    if (best > alpha) alpha = best;
+    if (alpha >= beta) break;
+  }
+  return best;
+}
+
+function chooseAiMove(state) {
+  const moves = allLegalMoves(state.turn, state);
+  let bestScore = -Infinity, bestMoves = [];
+  for (const mv of moves) {
+    const next = applyMove(state, mv.from, mv.to, 'Q');
+    const score = -negamax(next, SEARCH_DEPTH - 1, -Infinity, Infinity);
+    if (score > bestScore) { bestScore = score; bestMoves = [mv]; }
+    else if (score === bestScore) bestMoves.push(mv);
+  }
+  if (!bestMoves.length) return null;
+  return bestMoves[Math.floor(Math.random() * bestMoves.length)];
+}
+
 function cpuMove() {
   const state = { board, turn, castling, enPassant };
-  const moves = allLegalMoves('b', state);
-  if (!moves.length) return;
-  const m = moves[Math.floor(Math.random() * moves.length)];
-  doMove(m.from, m.to);
+  const mv = chooseAiMove(state);
+  if (!mv) return;
+  doMove(mv.from, mv.to, 'Q');
   render();
 }
 
 document.getElementById('chess-restart').addEventListener('click', initBoard);
+document.getElementById('chess-restart-manual').addEventListener('click', initBoard);
 
 initBoard();

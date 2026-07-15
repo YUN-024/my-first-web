@@ -8,18 +8,24 @@
 <link rel="stylesheet" href="css/style.css">
 </head>
 <body>
-  <div class="topbar">
-    <a class="logo" href="index.html">PIXEL LAB</a>
-    <button id="theme-toggle" class="theme-toggle">LIGHT</button>
-  </div>
+  <header class="site-header">
+    <a href="index.html" class="btn back-btn">◀ 처음으로</a>
+    <h1 class="page-title">도트 그림판</h1>
+    <button id="theme-toggle" class="theme-toggle" aria-label="테마 전환"></button>
+  </header>
 
   <div class="container">
-    <a class="back-link" href="index.html">&larr; 메인으로</a>
-    <h2>도트 그림판</h2>
-
     <div class="panel" style="display:flex; gap:16px; flex-wrap:wrap; align-items:center;">
       <div>
-        <label>색상</label>
+        <button class="btn btn-cyan" id="tool-pencil">연필</button>
+        <button class="btn" id="tool-eraser">지우개</button>
+      </div>
+      <div>
+        <label>색상 팔레트</label>
+        <div class="palette-row" id="palette-row"></div>
+      </div>
+      <div>
+        <label>커스텀</label>
         <input type="color" id="color-picker" value="#4ce0d2">
       </div>
       <div>
@@ -32,7 +38,7 @@
         <input type="checkbox" id="grid-toggle" checked>
       </div>
       <button class="btn btn-pink" id="clear-btn">전체 지우기</button>
-      <button class="btn btn-cyan" id="save-btn">이미지 저장</button>
+      <button class="btn btn-cyan" id="save-btn">💾 이미지 저장</button>
     </div>
 
     <div class="panel" style="text-align:center;">

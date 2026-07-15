@@ -8,26 +8,30 @@
 <link rel="stylesheet" href="css/style.css">
 </head>
 <body>
-  <div class="topbar">
-    <a class="logo" href="index.html">PIXEL LAB</a>
-    <button id="theme-toggle" class="theme-toggle">LIGHT</button>
-  </div>
+  <header class="site-header">
+    <a href="game.html" class="btn back-btn">◀ 목록으로</a>
+    <h1 class="page-title">👻 팩맨</h1>
+    <button id="theme-toggle" class="theme-toggle" aria-label="테마 전환"></button>
+  </header>
   <div class="container">
-    <a class="back-link" href="game.html">&larr; 미니게임 선택</a>
-    <h2>팩맨</h2>
     <p style="color:var(--text-dim)">방향키로 이동하세요. 모든 코인을 먹으면 클리어!</p>
 
     <div style="display:flex; justify-content:center; gap:32px; font-family:'Press Start 2P'; font-size:12px; margin-bottom:10px;">
       <div>SCORE: <span id="pac-score">0</span></div>
-      <div>LIVES: <span id="pac-lives">3</span></div>
+      <div>LIVES: <span id="pac-lives">❤❤❤</span></div>
+      <div>HIGH SCORE: <span id="pac-high-score">0</span></div>
     </div>
 
-    <div style="text-align:center;">
+    <div class="game-stage" style="text-align:center;">
       <canvas id="pacman-canvas" width="380" height="420" style="background:#000; border:3px solid var(--border); box-shadow: var(--shadow);"></canvas>
-    </div>
-    <p id="pac-message" style="text-align:center; font-family:'Press Start 2P'; font-size:14px; color:var(--accent-yellow);"></p>
-    <div style="text-align:center; margin-top:10px;">
-      <button class="btn btn-cyan" id="pac-restart">재시작</button>
+      <div id="pac-overlay" class="game-overlay">
+        <div class="panel">
+          <h2 id="pac-result-title"></h2>
+          <div id="pac-final-score" class="pixel-font" style="font-size:14px; color:var(--accent-yellow);"></div>
+          <div id="pac-new-record" class="new-record pixel-font" style="font-size:13px;"></div>
+          <button class="btn btn-cyan" id="pac-restart">재시작</button>
+        </div>
+      </div>
     </div>
 
     <!-- mobile controls -->

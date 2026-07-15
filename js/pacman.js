@@ -54,9 +54,34 @@ ctx.imageSmoothingEnabled = false;
 
 const scoreEl = document.getElementById('pac-score');
 const livesEl = document.getElementById('pac-lives');
-const msgEl = document.getElementById('pac-message');
+const highScoreEl = document.getElementById('pac-high-score');
+const overlayEl = document.getElementById('pac-overlay');
+const resultTitleEl = document.getElementById('pac-result-title');
+const finalScoreEl = document.getElementById('pac-final-score');
+const newRecordEl = document.getElementById('pac-new-record');
+const restartBtn = document.getElementById('pac-restart');
+
+const HIGH_SCORE_KEY = 'pixel-site-pacman-highscore';
+let highScore = parseInt(localStorage.getItem(HIGH_SCORE_KEY), 10) || 0;
+highScoreEl.textContent = highScore;
 
 let score = 0, lives = 3, pelletsLeft = 0, running = true;
+
+function renderLives() { livesEl.textContent = '❤'.repeat(Math.max(lives, 0)) || '-'; }
+
+function endGame(title) {
+  running = false;
+  const isNewRecord = score > highScore;
+  if (isNewRecord) {
+    highScore = score;
+    localStorage.setItem(HIGH_SCORE_KEY, String(highScore));
+    highScoreEl.textContent = highScore;
+  }
+  resultTitleEl.textContent = title;
+  finalScoreEl.textContent = '최종 점수: ' + score;
+  newRecordEl.textContent = isNewRecord ? '🎉 신기록!' : '';
+  overlayEl.classList.add('visible');
+}
 
 const DIRS = {
   up: { dr: -1, dc: 0 }, down: { dr: 1, dc: 0 },
@@ -88,6 +113,8 @@ class Mover {
 
 let pacStart = { r: 16, c: 9 };
 let pac;
+let facing = 'right';
+const FACING_ANGLE = { right: 0, down: Math.PI / 2, left: Math.PI, up: -Math.PI / 2, none: 0 };
 
 const ghostColors = ['#ff5da2', '#ffd23f', '#4ce0d2'];
 let ghosts = [];
@@ -97,6 +124,7 @@ let frameCount = 0;
 
 function resetPositions() {
   pac = new Mover(pacStart.r, pacStart.c);
+  facing = 'right';
   ghosts = ghostHome.map((h, i) => {
     const g = new Mover(h.r, h.c);
     g.color = ghostColors[i];
@@ -112,7 +140,8 @@ function initGame() {
   loadMaze();
   pelletsLeft = totalPellets;
   score = 0; lives = 3; running = true;
-  scoreEl.textContent = score; livesEl.textContent = lives; msgEl.textContent = '';
+  scoreEl.textContent = score; renderLives();
+  overlayEl.classList.remove('visible');
   resetPositions();
 }
 
@@ -175,8 +204,7 @@ function eatPellet() {
   }
   scoreEl.textContent = score;
   if (pelletsLeft <= 0) {
-    running = false;
-    msgEl.textContent = '클리어! 모든 코인을 모았습니다.';
+    endGame('클리어!');
   }
 }
 
@@ -191,10 +219,9 @@ function checkGhostCollision() {
         g.x = g.c * CELL + CELL / 2; g.y = g.r * CELL + CELL / 2;
         g.frightened = 0;
       } else {
-        lives--; livesEl.textContent = lives;
+        lives--; renderLives();
         if (lives <= 0) {
-          running = false;
-          msgEl.textContent = '게임 오버! 최종 점수: ' + score;
+          endGame('게임 오버');
         } else {
           resetPositions();
         }
@@ -227,16 +254,29 @@ function draw() {
     }
   }
 
+  ctx.save();
+  ctx.translate(pac.x, pac.y);
+  ctx.rotate(FACING_ANGLE[facing]);
+  const mouthOpen = 0.06 * Math.PI + 0.16 * Math.PI * Math.abs(Math.sin(frameCount * 0.2));
   ctx.fillStyle = '#ffd23f';
   ctx.beginPath();
-  ctx.arc(pac.x, pac.y, CELL / 2 - 2, 0.25 * Math.PI, 1.75 * Math.PI);
-  ctx.lineTo(pac.x, pac.y);
+  ctx.arc(0, 0, CELL / 2 - 2, mouthOpen, 2 * Math.PI - mouthOpen);
+  ctx.lineTo(0, 0);
   ctx.fill();
+  ctx.restore();
 
   ghosts.forEach(g => {
-    ctx.fillStyle = g.frightened > 0 ? '#2b2bff' : g.color;
+    ctx.fillStyle = ghostColor(g);
     ctx.fillRect(g.x - CELL / 2 + 2, g.y - CELL / 2 + 2, CELL - 4, CELL - 4);
   });
+}
+
+function ghostColor(g) {
+  if (g.frightened > 0) {
+    if (g.frightened < 90 && Math.floor(g.frightened / 6) % 2 === 0) return '#eaeaff';
+    return '#2b2bff';
+  }
+  return g.color;
 }
 
 document.addEventListener('keydown', (e) => {
@@ -248,12 +288,13 @@ document.querySelectorAll('[data-dir]').forEach(btn => {
   btn.addEventListener('click', () => { pac.nextDir = btn.dataset.dir; });
 });
 
-document.getElementById('pac-restart').addEventListener('click', initGame);
+restartBtn.addEventListener('click', initGame);
 
 function loop() {
   frameCount++;
   if (running) {
     move(pac, false);
+    if (pac.dir !== 'none') facing = pac.dir;
     eatPellet();
 
     ghosts.forEach(g => {

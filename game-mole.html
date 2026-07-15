@@ -7,30 +7,45 @@
 <script src="js/theme.js"></script>
 <link rel="stylesheet" href="css/style.css">
 <style>
-  .mole-grid { display:grid; grid-template-columns: repeat(3, 1fr); gap:16px; max-width:420px; margin:20px auto; }
+  .mole-grid { display:grid; gap:12px; max-width:480px; margin:20px auto; }
   .hole { background:var(--surface-2); border:3px solid var(--border); aspect-ratio:1; display:flex; align-items:center; justify-content:center; cursor:pointer; overflow:hidden; }
-  .mole { width:70%; height:70%; background:var(--accent-pink); border-radius:0; clip-path: polygon(20% 0%, 80% 0%, 100% 40%, 100% 100%, 0% 100%, 0% 40%); }
+  .mole-emoji { font-size:2.4rem; line-height:1; transform: translateY(100%); transition: transform .15s steps(3); }
+  .mole-emoji.up { transform: translateY(0); }
   .stat-row { display:flex; justify-content:center; gap:32px; margin-bottom:10px; font-family:'Press Start 2P',monospace; font-size:13px; }
 </style>
 </head>
 <body>
-  <div class="topbar">
-    <a class="logo" href="index.html">PIXEL LAB</a>
-    <button id="theme-toggle" class="theme-toggle">LIGHT</button>
-  </div>
+  <header class="site-header">
+    <a href="game.html" class="btn back-btn">◀ 목록으로</a>
+    <h1 class="page-title">🔨 두더지 게임</h1>
+    <button id="theme-toggle" class="theme-toggle" aria-label="테마 전환"></button>
+  </header>
   <div class="container">
-    <a class="back-link" href="game.html">&larr; 미니게임 선택</a>
-    <h2>두더지 게임</h2>
-
     <div class="stat-row">
       <div>SCORE: <span id="score">0</span></div>
       <div>TIME: <span id="time">30</span>s</div>
+      <div>HIGH SCORE: <span id="high-score">0</span></div>
     </div>
     <div style="text-align:center; margin-bottom:16px;">
+      <label>판 크기</label>
+      <select id="grid-size">
+        <option value="3">3 x 3</option>
+        <option value="4">4 x 4</option>
+        <option value="5">5 x 5</option>
+      </select>
       <button class="btn btn-cyan" id="start-btn">게임 시작</button>
     </div>
-    <div class="mole-grid" id="mole-grid"></div>
-    <p id="result" style="text-align:center; font-family:'Press Start 2P'; font-size:14px; color:var(--accent-yellow);"></p>
+    <div class="game-stage">
+      <div class="mole-grid" id="mole-grid"></div>
+      <div id="game-overlay" class="game-overlay">
+        <div class="panel">
+          <h2>게임 종료!</h2>
+          <div id="final-score" class="pixel-font" style="font-size:14px; color:var(--accent-yellow);"></div>
+          <div id="new-record" class="new-record pixel-font" style="font-size:13px;"></div>
+          <button class="btn btn-cyan" id="restart-btn">다시하기</button>
+        </div>
+      </div>
+    </div>
   </div>
 <script src="js/mole.js"></script>
 </body>

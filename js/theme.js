@@ -8,7 +8,7 @@
     if (!btn) return;
     const update = () => {
       const t = document.documentElement.getAttribute('data-theme');
-      btn.textContent = t === 'dark' ? 'LIGHT' : 'DARK';
+      btn.textContent = t === 'dark' ? '🌙' : '☀️';
     };
     update();
     btn.addEventListener('click', () => {
