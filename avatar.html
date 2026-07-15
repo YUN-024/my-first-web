@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>아바타 생성 · 픽셀 도트 월드</title>
+  <script>
+    document.documentElement.setAttribute('data-theme', localStorage.getItem('pixelsite-theme') || 'dark');
+  </script>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Press+Start+2P&family=Silkscreen:wght@400;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+  <div class="page">
+    <header class="site-header">
+      <a href="index.html" class="pixel-btn back-btn">◀ 처음으로</a>
+      <h1 class="page-title">아바타 생성</h1>
+      <button id="theme-toggle" class="pixel-btn theme-toggle" aria-label="테마 전환"></button>
+    </header>
+
+    <div class="page-body">
+      <div class="avatar-layout">
+        <div class="avatar-stage-panel">
+          <canvas id="avatar-canvas" width="220" height="330"></canvas>
+          <button class="pixel-btn pixel-btn--lg" id="download-btn">💾 다운로드</button>
+        </div>
+
+        <div class="avatar-controls pixel-panel">
+          <div class="category-tabs" id="category-tabs"></div>
+          <div class="swatch-row" id="swatch-row"></div>
+          <div class="color-picker-row" id="color-picker-row" style="display:none;">
+            <label for="part-color">색상:</label>
+            <input type="color" id="part-color">
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <script src="theme.js"></script>
+  <script src="avatar.js"></script>
+</body>
+</html>

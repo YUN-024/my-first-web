@@ -1,0 +1,192 @@
+/* ==========================================================================
+   Chess page — board-specific rules only.
+   Everything else reuses shared classes from ../styles.css
+   ========================================================================== */
+.chess-field {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 12px;
+}
+
+.chess-board-wrap {
+  border: 4px solid var(--border);
+  box-shadow: 6px 6px 0 0 var(--shadow);
+  background: var(--border);
+}
+
+.chess-board {
+  display: grid;
+  grid-template-columns: repeat(8, 56px);
+  grid-template-rows: repeat(8, 56px);
+}
+
+/* Individual squares are <button> elements */
+.chess-square {
+  position: relative;
+  width: 56px;
+  height: 56px;
+  margin: 0;
+  padding: 0;
+  border: none;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-family: 'Silkscreen', monospace;
+  line-height: 1;
+  /* crisp pixel look, no rounded rendering */
+  image-rendering: pixelated;
+}
+
+/* Light / dark checker colours — deliberately board-specific, not theme vars,
+   so the board stays a readable chessboard in both site themes. */
+.chess-square.light {
+  background: #e9d7b0;
+}
+
+.chess-square.dark {
+  background: #9a6b43;
+}
+
+/* The piece glyph */
+.chess-piece {
+  font-family: 'Press Start 2P', monospace;
+  font-size: 34px;
+  line-height: 1;
+  pointer-events: none;
+  user-select: none;
+  /* draw pieces as solid silhouettes with a hard pixel outline */
+  text-shadow:
+    2px 0 0 #000,
+    -2px 0 0 #000,
+    0 2px 0 #000,
+    0 -2px 0 #000,
+    2px 2px 0 #000,
+    -2px -2px 0 #000,
+    2px -2px 0 #000,
+    -2px 2px 0 #000;
+}
+
+.chess-piece.white {
+  color: #fbf3e0;
+}
+
+.chess-piece.black {
+  color: #2a2a2a;
+}
+
+/* Selected square highlight */
+.chess-square.selected {
+  outline: 4px solid var(--accent);
+  outline-offset: -4px;
+}
+
+/* Square the last move started from / landed on */
+.chess-square.lastmove::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background: var(--accent);
+  opacity: 0.28;
+  pointer-events: none;
+}
+
+/* King in check gets a danger flash */
+.chess-square.in-check::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background: var(--danger);
+  opacity: 0.45;
+  pointer-events: none;
+}
+
+/* Legal-move dot for an empty destination */
+.chess-square.move-dot > .move-marker {
+  position: absolute;
+  width: 18px;
+  height: 18px;
+  background: var(--accent-2);
+  opacity: 0.8;
+  pointer-events: none;
+}
+
+/* Legal capture: ring around the target square */
+.chess-square.capture-dot > .move-marker {
+  position: absolute;
+  inset: 4px;
+  border: 4px solid var(--accent-2);
+  opacity: 0.85;
+  pointer-events: none;
+}
+
+/* Captured-piece trays */
+.captured-tray {
+  min-height: 30px;
+  width: 464px;
+  max-width: 100%;
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 2px;
+  padding: 4px;
+  font-family: 'Press Start 2P', monospace;
+  font-size: 20px;
+  line-height: 1;
+  color: var(--text-muted);
+}
+
+.captured-tray .cap-piece {
+  text-shadow: 1px 1px 0 var(--shadow);
+}
+
+.chess-hint {
+  color: var(--text-muted);
+  font-size: 0.65rem;
+  text-align: center;
+}
+
+.chess-overlay-msg {
+  font-size: 0.75rem;
+  color: var(--text-muted);
+}
+
+#result-message {
+  font-size: 0.8rem;
+}
+
+/* Turn indicator emphasis */
+#turn-indicator {
+  color: var(--accent);
+}
+
+/* ==========================================================================
+   Responsive — shrink the board on small screens
+   ========================================================================== */
+@media (max-width: 520px) {
+  .chess-board {
+    grid-template-columns: repeat(8, 38px);
+    grid-template-rows: repeat(8, 38px);
+  }
+
+  .chess-square {
+    width: 38px;
+    height: 38px;
+  }
+
+  .chess-piece {
+    font-size: 22px;
+  }
+
+  .captured-tray {
+    width: 304px;
+    font-size: 15px;
+  }
+
+  .chess-square.move-dot > .move-marker {
+    width: 12px;
+    height: 12px;
+  }
+}
