@@ -1,0 +1,37 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>두더지 게임 - PIXEL LAB</title>
+<script src="js/theme.js"></script>
+<link rel="stylesheet" href="css/style.css">
+<style>
+  .mole-grid { display:grid; grid-template-columns: repeat(3, 1fr); gap:16px; max-width:420px; margin:20px auto; }
+  .hole { background:var(--surface-2); border:3px solid var(--border); aspect-ratio:1; display:flex; align-items:center; justify-content:center; cursor:pointer; overflow:hidden; }
+  .mole { width:70%; height:70%; background:var(--accent-pink); border-radius:0; clip-path: polygon(20% 0%, 80% 0%, 100% 40%, 100% 100%, 0% 100%, 0% 40%); }
+  .stat-row { display:flex; justify-content:center; gap:32px; margin-bottom:10px; font-family:'Press Start 2P',monospace; font-size:13px; }
+</style>
+</head>
+<body>
+  <div class="topbar">
+    <a class="logo" href="index.html">PIXEL LAB</a>
+    <button id="theme-toggle" class="theme-toggle">LIGHT</button>
+  </div>
+  <div class="container">
+    <a class="back-link" href="game.html">&larr; 미니게임 선택</a>
+    <h2>두더지 게임</h2>
+
+    <div class="stat-row">
+      <div>SCORE: <span id="score">0</span></div>
+      <div>TIME: <span id="time">30</span>s</div>
+    </div>
+    <div style="text-align:center; margin-bottom:16px;">
+      <button class="btn btn-cyan" id="start-btn">게임 시작</button>
+    </div>
+    <div class="mole-grid" id="mole-grid"></div>
+    <p id="result" style="text-align:center; font-family:'Press Start 2P'; font-size:14px; color:var(--accent-yellow);"></p>
+  </div>
+<script src="js/mole.js"></script>
+</body>
+</html>

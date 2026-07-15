@@ -1,37 +1,31 @@
 <!DOCTYPE html>
 <html lang="ko">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>픽셀 도트 월드</title>
-  <script>
-    document.documentElement.setAttribute('data-theme', localStorage.getItem('pixelsite-theme') || 'dark');
-  </script>
-  <link rel="preconnect" href="https://fonts.googleapis.com">
-  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Press+Start+2P&family=Silkscreen:wght@400;700&display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="styles.css">
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>PIXEL LAB</title>
+<script src="js/theme.js"></script>
+<link rel="stylesheet" href="css/style.css">
 </head>
 <body>
-  <div class="page">
-    <header class="site-header">
-      <span></span>
-      <button id="theme-toggle" class="pixel-btn theme-toggle" aria-label="테마 전환"></button>
-    </header>
+  <div class="topbar">
+    <a class="logo" href="index.html">PIXEL LAB</a>
+    <button id="theme-toggle" class="theme-toggle">LIGHT</button>
+  </div>
 
+  <div class="container">
     <div class="hero">
-      <div class="stars" id="stars" aria-hidden="true"></div>
-      <div class="clouds" id="clouds" aria-hidden="true"></div>
+      <h1>PIXEL LAB</h1>
+      <canvas id="hero-canvas" width="480" height="220"></canvas>
+    </div>
 
-      <div class="nav-buttons">
-        <a class="pixel-btn pixel-btn--lg" href="avatar.html">🧑 아바타 생성</a>
-        <a class="pixel-btn pixel-btn--lg" href="paint.html">🎨 도트 그림판</a>
-        <a class="pixel-btn pixel-btn--lg" href="game/index.html">🎮 미니게임</a>
-      </div>
+    <div class="menu-grid">
+      <a class="btn btn-cyan" href="avatar.html">① 아바타 만들기</a>
+      <a class="btn btn-pink" href="paint.html">② 도트 그림판</a>
+      <a class="btn btn-yellow" href="game.html">③ 미니게임</a>
     </div>
   </div>
 
-  <script src="theme.js"></script>
-  <script src="main.js"></script>
+<script src="js/main.js"></script>
 </body>
 </html>
