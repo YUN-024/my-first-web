@@ -9,7 +9,7 @@
 </head>
 <body>
   <header class="site-header">
-    <a href="index.html" class="btn back-btn">◀ 처음으로</a>
+    <a href="index.html" class="btn back-btn">◀ 메인 화면으로</a>
     <h1 class="page-title">도트 그림판</h1>
     <button id="theme-toggle" class="theme-toggle" aria-label="테마 전환"></button>
   </header>
@@ -37,12 +37,20 @@
         <label>격자</label>
         <input type="checkbox" id="grid-toggle" checked>
       </div>
+      <div>
+        <label><input type="checkbox" id="snap-toggle"> 칸에 맞춰 채우기</label>
+      </div>
+      <button class="btn" id="undo-btn">되돌리기</button>
+      <button class="btn" id="redo-btn">다시실행</button>
       <button class="btn btn-pink" id="clear-btn">전체 지우기</button>
       <button class="btn btn-cyan" id="save-btn">💾 이미지 저장</button>
     </div>
 
     <div class="panel" style="text-align:center;">
-      <canvas id="paint-canvas" width="512" height="512" style="background:#ffffff; border:3px solid var(--border); cursor:crosshair; touch-action:none;"></canvas>
+      <div style="position:relative; display:inline-block;">
+        <canvas id="paint-canvas" width="512" height="512" style="background:#ffffff; border:3px solid var(--border); cursor:crosshair; touch-action:none; display:block;"></canvas>
+        <canvas id="grid-overlay" width="512" height="512" style="position:absolute; top:0; left:0; pointer-events:none;"></canvas>
+      </div>
     </div>
   </div>
 

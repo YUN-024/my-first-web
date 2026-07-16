@@ -13,15 +13,19 @@ const HIGH_SCORE_KEY = 'pixel-site-mole-highscore';
 let highScore = parseInt(localStorage.getItem(HIGH_SCORE_KEY), 10) || 0;
 highScoreEl.textContent = highScore;
 
-const EMOJIS = ['🐹', '🐭', '🦔'];
+const GOOD_EMOJI = '💗';
+const BAD_EMOJI = '💣';
+const BAD_CHANCE = 0.3;
+const TOTAL_TIME = 30;
 
 let holes = [];
 let size = 3;
 let score = 0;
-let timeLeft = 30;
+let timeLeft = TOTAL_TIME;
 let gameTimer = null;
-let moleTimer = null;
+let moleTimeoutId = null;
 let activeHole = null;
+let lastHole = null;
 let running = false;
 
 function buildGrid(n) {
@@ -37,23 +41,43 @@ function buildGrid(n) {
     hole.appendChild(emojiSpan);
     hole.addEventListener('click', () => whack(i));
     gridEl.appendChild(hole);
-    holes.push({ el: hole, emojiSpan });
+    holes.push({ el: hole, emojiSpan, isBad: false });
   }
   activeHole = null;
+  lastHole = null;
+}
+
+function currentInterval() {
+  // speeds up as time runs out: starts ~750ms, drops toward ~280ms
+  const progress = 1 - timeLeft / TOTAL_TIME;
+  return Math.max(280, 750 - progress * 470);
 }
 
 function showRandomMole() {
   if (activeHole !== null) holes[activeHole].emojiSpan.classList.remove('up');
-  activeHole = Math.floor(Math.random() * holes.length);
-  const emoji = EMOJIS[Math.floor(Math.random() * EMOJIS.length)];
-  holes[activeHole].emojiSpan.textContent = emoji;
+  if (holes.length > 1) {
+    do {
+      activeHole = Math.floor(Math.random() * holes.length);
+    } while (activeHole === lastHole);
+  } else {
+    activeHole = 0;
+  }
+  lastHole = activeHole;
+  const isBad = Math.random() < BAD_CHANCE;
+  holes[activeHole].isBad = isBad;
+  holes[activeHole].emojiSpan.textContent = isBad ? BAD_EMOJI : GOOD_EMOJI;
   holes[activeHole].emojiSpan.classList.add('up');
+
+  moleTimeoutId = setTimeout(() => {
+    if (!running) return;
+    showRandomMole();
+  }, currentInterval());
 }
 
 function whack(i) {
   if (!running) return;
   if (i === activeHole) {
-    score++;
+    score += holes[i].isBad ? -1 : 1;
     scoreEl.textContent = score;
     holes[i].emojiSpan.classList.remove('up');
     activeHole = null;
@@ -61,17 +85,18 @@ function whack(i) {
 }
 
 function startGame() {
+  if (running) return;
   buildGrid(parseInt(gridSizeSelect.value, 10));
   running = true;
   score = 0;
-  timeLeft = 30;
+  timeLeft = TOTAL_TIME;
   scoreEl.textContent = score;
   timeEl.textContent = timeLeft;
   overlay.classList.remove('visible');
 
-  clearInterval(moleTimer);
   clearInterval(gameTimer);
-  moleTimer = setInterval(showRandomMole, 700);
+  clearTimeout(moleTimeoutId);
+  showRandomMole();
   gameTimer = setInterval(() => {
     timeLeft--;
     timeEl.textContent = timeLeft;
@@ -82,7 +107,7 @@ function startGame() {
 function endGame() {
   running = false;
   clearInterval(gameTimer);
-  clearInterval(moleTimer);
+  clearTimeout(moleTimeoutId);
   holes.forEach(h => h.emojiSpan.classList.remove('up'));
 
   const isNewRecord = score > highScore;

@@ -1,27 +1,75 @@
-// ---------- maze definition (19 cols x 21 rows) ----------
+// ---------- maze definitions (19 cols x 21 rows), one picked at random per game ----------
 // # wall, . dot, o power pellet, ' ' empty path, = ghost gate, G ghost house, P pacman start
-const RAW_MAZE = [
-  "###################",
-  "#........#........#",
-  "#.##.###.#.###.##.#",
-  "#o##.###.#.###.##o#",
-  "#.................#",
-  "#.##.#.#####.#.##.#",
-  "#....#...#...#....#",
-  "####.###.#.###.####",
-  "   #.#       #.#   ",
-  "####.# ##=## #.####",
-  "    .  #GGG#  .    ",
-  "####.# ##### #.####",
-  "   #.#       #.#   ",
-  "####.#.#####.#.####",
-  "#........#........#",
-  "#.##.###.#.###.##.#",
-  "#o.#.....P.....#.o#",
-  "##.#.#.#####.#.#.##",
-  "#....#...#...#....#",
-  "#.######.#.######.#",
-  "###################",
+const MAZES = [
+  [
+    "###################",
+    "#........#........#",
+    "#.##.###.#.###.##.#",
+    "#o##.###.#.###.##o#",
+    "#.................#",
+    "#.##.#.#####.#.##.#",
+    "#....#...#...#....#",
+    "####.###.#.###.####",
+    "   #.#       #.#   ",
+    "####.# ##=## #.####",
+    "    .  #GGG#  .    ",
+    "####.# ##### #.####",
+    "   #.#       #.#   ",
+    "####.#.#####.#.####",
+    "#........#........#",
+    "#.##.###.#.###.##.#",
+    "#o.#.....P.....#.o#",
+    "##.#.#.#####.#.#.##",
+    "#....#...#...#....#",
+    "#.######.#.######.#",
+    "###################",
+  ],
+  [
+    "###################",
+    "#.######.#.######.#",
+    "#....#...#...#....#",
+    "##.#.#.#####.#.#.##",
+    "#o.#.....P.....#.o#",
+    "#.##.###.#.###.##.#",
+    "#........#........#",
+    "####.#.#####.#.####",
+    "   #.#       #.#   ",
+    "####.# ##### #.####",
+    "    .  #GGG#  .    ",
+    "####.# ##=## #.####",
+    "   #.#       #.#   ",
+    "####.###.#.###.####",
+    "#....#...#...#....#",
+    "#.##.#.#####.#.##.#",
+    "#.................#",
+    "#o##.###.#.###.##o#",
+    "#.##.###.#.###.##.#",
+    "#........#........#",
+    "###################",
+  ],
+  [
+    "###################",
+    "#.................#",
+    "#.##.##.###.##.##.#",
+    "#o##.#.#####.#.##o#",
+    "#.................#",
+    "#.#..#..###..#..#.#",
+    "#..#.#.#####.#.#..#",
+    "####.###.#.###.####",
+    "   #.#       #.#   ",
+    "####.# ##=## #.####",
+    "    .  #GGG#  .    ",
+    "####.# ##### #.####",
+    "   #.#       #.#   ",
+    "####.#.#####.#.####",
+    "#.................#",
+    "#.##...##.##...##.#",
+    "#..#...........#..#",
+    "##.#.#.#####.#.#.##",
+    "#....#...#...#....#",
+    "#.##.#.#####.#.##.#",
+    "###################",
+  ],
 ];
 
 const COLS = 19, ROWS = 21, CELL = 20;
@@ -29,7 +77,8 @@ let grid = [];
 let totalPellets = 0;
 
 function loadMaze() {
-  grid = RAW_MAZE.map(row => row.split(''));
+  const raw = MAZES[Math.floor(Math.random() * MAZES.length)];
+  grid = raw.map(row => row.split(''));
   totalPellets = 0;
   for (let r = 0; r < ROWS; r++) {
     for (let c = 0; c < COLS; c++) {
@@ -268,6 +317,7 @@ function draw() {
   ghosts.forEach(g => {
     ctx.fillStyle = ghostColor(g);
     ctx.fillRect(g.x - CELL / 2 + 2, g.y - CELL / 2 + 2, CELL - 4, CELL - 4);
+    drawGhostFace(g);
   });
 }
 
@@ -279,13 +329,36 @@ function ghostColor(g) {
   return g.color;
 }
 
+function drawGhostFace(g) {
+  const eyeOffsetX = 4, eyeY = g.y - 3;
+  if (g.frightened > 0) {
+    ctx.strokeStyle = '#fff';
+    ctx.lineWidth = 1.5;
+    ctx.beginPath();
+    ctx.moveTo(g.x - 5, g.y + 4);
+    for (let i = -5; i <= 5; i += 2.5) {
+      ctx.lineTo(g.x + i, g.y + 4 + (Math.round(i / 2.5) % 2 === 0 ? 2 : -2));
+    }
+    ctx.stroke();
+    return;
+  }
+  const d = DIRS[g.dir] || DIRS.none;
+  const shiftX = d.dc * 1.5, shiftY = d.dr * 1.5;
+  ctx.fillStyle = '#fff';
+  ctx.beginPath();
+  ctx.arc(g.x - eyeOffsetX, eyeY, 3, 0, Math.PI * 2);
+  ctx.arc(g.x + eyeOffsetX, eyeY, 3, 0, Math.PI * 2);
+  ctx.fill();
+  ctx.fillStyle = '#1a1a2e';
+  ctx.beginPath();
+  ctx.arc(g.x - eyeOffsetX + shiftX, eyeY + shiftY, 1.4, 0, Math.PI * 2);
+  ctx.arc(g.x + eyeOffsetX + shiftX, eyeY + shiftY, 1.4, 0, Math.PI * 2);
+  ctx.fill();
+}
+
 document.addEventListener('keydown', (e) => {
   const map = { ArrowUp: 'up', ArrowDown: 'down', ArrowLeft: 'left', ArrowRight: 'right' };
   if (map[e.key]) { pac.nextDir = map[e.key]; e.preventDefault(); }
-});
-
-document.querySelectorAll('[data-dir]').forEach(btn => {
-  btn.addEventListener('click', () => { pac.nextDir = btn.dataset.dir; });
 });
 
 restartBtn.addEventListener('click', initGame);

@@ -1,0 +1,85 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>픽셀 스네이크 - PIXEL LAB</title>
+<script src="js/theme.js"></script>
+<link rel="stylesheet" href="css/style.css">
+<style>
+  /* widen the container on this page so the play area isn't boxed into 960px */
+  .container { max-width: 1400px; }
+  #snake-canvas {
+    background:#0b0b14;
+    border:3px solid var(--border);
+    box-shadow: var(--shadow);
+    cursor: crosshair;
+    display:block;
+    margin:0 auto;
+    width: 100%;
+    height: 72vh;
+    min-height: 420px;
+    max-width: 100%;
+  }
+  .snake-start-panel { text-align:center; }
+  .snake-start-panel input[type="text"] {
+    font-family:'Silkscreen', monospace;
+    font-size:18px;
+    background: var(--surface-2);
+    border: 2px solid var(--border);
+    color: var(--text);
+    padding: 6px;
+    margin: 12px 8px;
+    width: 200px;
+    text-align:center;
+  }
+  #snake-hud { display:none; }
+  #snake-stage { display:none; text-align:center; width: 100%; }
+  .snake-leaderboard { list-style:none; padding:0; margin:0; font-size:16px; }
+  .snake-leaderboard li { display:flex; justify-content:space-between; padding:5px 4px; border-bottom:1px solid var(--border); }
+  .snake-leaderboard li:last-child { border-bottom:none; }
+  .snake-leaderboard li.rank-1 { color: var(--accent-yellow); }
+</style>
+</head>
+<body>
+  <header class="site-header">
+    <a href="game.html" class="btn back-btn">◀ 목록으로</a>
+    <h1 class="page-title">🐍 픽셀 스네이크</h1>
+    <button id="theme-toggle" class="theme-toggle" aria-label="테마 전환"></button>
+  </header>
+  <div class="container">
+    <p style="color:var(--text-dim)">마우스를 움직여 뱀을 조종하세요. 먹이를 먹으면 몸이 길어집니다. 벽, 자기 몸, 또는 다른 AI 뱀에게 닿으면 게임 오버! AI 뱀의 몸통을 잘라내면 그 뱀은 죽고 먹이를 남깁니다.</p>
+
+    <div id="snake-start-panel" class="panel snake-start-panel">
+      <h2 class="pixel-font" style="font-size:14px;">닉네임을 입력하세요</h2>
+      <div>
+        <input type="text" id="snake-nickname" placeholder="플레이어" maxlength="10">
+      </div>
+      <button class="btn btn-cyan" id="snake-start-btn">시작</button>
+    </div>
+
+    <div id="snake-hud" style="justify-content:center; gap:32px; font-family:'Press Start 2P'; font-size:12px; margin-bottom:10px;">
+      <div>SCORE: <span id="snake-score">0</span></div>
+      <div>HIGH SCORE: <span id="snake-high-score">0</span></div>
+    </div>
+
+    <div id="snake-stage" class="game-stage">
+      <canvas id="snake-canvas"></canvas>
+      <div id="snake-overlay" class="game-overlay">
+        <div class="panel">
+          <h2>게임 오버</h2>
+          <div id="snake-final-score" class="pixel-font" style="font-size:14px; color:var(--accent-yellow);"></div>
+          <div id="snake-new-record" class="new-record pixel-font" style="font-size:13px;"></div>
+          <button class="btn btn-cyan" id="snake-restart-btn">다시하기</button>
+        </div>
+      </div>
+    </div>
+
+    <div class="panel" id="snake-leaderboard-panel">
+      <h3 class="pixel-font" style="font-size:13px; text-align:center;">🏆 로컬 리더보드</h3>
+      <ol class="snake-leaderboard" id="snake-leaderboard-list"></ol>
+    </div>
+  </div>
+<script src="js/snake.js"></script>
+</body>
+</html>

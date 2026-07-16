@@ -1,0 +1,92 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>리버시 - PIXEL LAB</title>
+<script src="js/theme.js"></script>
+<link rel="stylesheet" href="css/style.css">
+<style>
+  #reversi-board {
+    display: grid;
+    grid-template-columns: repeat(8, 44px);
+    grid-template-rows: repeat(8, 44px);
+    background: var(--surface-2);
+    border: 4px solid var(--border);
+    box-shadow: var(--shadow);
+    margin: 0 auto;
+  }
+  .sq {
+    display: flex; align-items: center; justify-content: center;
+    font-size: 30px; line-height: 1; cursor: pointer; user-select: none; position: relative; box-sizing: border-box;
+    border-right: 1px solid var(--border);
+    border-bottom: 1px solid var(--border);
+  }
+  .sq.col-last { border-right: none; }
+  .sq.row-last { border-bottom: none; }
+  .sq.legal::after {
+    content: ''; position: absolute; width: 12px; height: 12px;
+    background: var(--accent-cyan); opacity: 0.6;
+  }
+  .sq.lastmove { box-shadow: inset 0 0 0 4px rgba(255,210,63,0.5); }
+  .stone-black { color: #14141c; text-shadow: 1px 1px 0 #888, -1px -1px 0 #888, 1px -1px 0 #888, -1px 1px 0 #888; }
+  .stone-white { color: #f5f5f5; text-shadow: 1px 1px 0 #000, -1px -1px 0 #000, 1px -1px 0 #000, -1px 1px 0 #000; }
+
+  .modal-overlay {
+    position: fixed; inset: 0; background: rgba(0,0,0,0.65);
+    display: none; align-items: center; justify-content: center; z-index: 50;
+  }
+  .modal-overlay.open { display: flex; }
+  .modal-box {
+    background: var(--surface); border: 4px solid var(--border); box-shadow: var(--shadow);
+    padding: 24px; text-align: center; max-width: 320px;
+  }
+  .modal-box p { font-size: 13px; line-height: 1.6; margin-bottom: 16px; }
+  .modal-buttons { display: flex; gap: 10px; justify-content: center; flex-wrap: wrap; }
+</style>
+</head>
+<body>
+  <header class="site-header">
+    <a href="game.html" class="btn back-btn">◀ 목록으로</a>
+    <h1 class="page-title">⚪ 리버시</h1>
+    <button id="theme-toggle" class="theme-toggle" aria-label="테마 전환"></button>
+  </header>
+  <div class="container">
+    <div style="text-align:center; margin-bottom:14px;">
+      <label style="margin-right:16px;"><input type="radio" name="reversi-mode" id="mode-pvp" value="pvp" checked> 2인 대전</label>
+      <label><input type="radio" name="reversi-mode" id="mode-ai" value="ai"> 컴퓨터와 대전 (흑, AI는 백)</label>
+    </div>
+
+    <div style="text-align:center; font-family:'Press Start 2P'; font-size:13px; margin-bottom:10px;">
+      TURN: <span id="turn-label">BLACK</span>
+    </div>
+
+    <div id="score-display" style="text-align:center; font-family:'Press Start 2P'; font-size:16px; margin-bottom:14px; color:var(--accent-yellow);"></div>
+
+    <div class="game-stage" style="width:max-content; margin:0 auto;">
+      <div id="reversi-board"></div>
+      <div id="reversi-overlay" class="game-overlay">
+        <div class="panel">
+          <h2 id="reversi-result-title"></h2>
+          <div id="reversi-result-message" class="pixel-font" style="font-size:14px; color:var(--accent-yellow);"></div>
+          <button class="btn btn-cyan" id="reversi-restart">새 게임</button>
+        </div>
+      </div>
+    </div>
+
+    <p id="reversi-message" style="text-align:center; font-family:'Press Start 2P'; font-size:14px; color:var(--accent-yellow);"></p>
+    <div style="text-align:center; margin-top:10px;">
+      <button class="btn btn-cyan" id="reversi-restart-manual">새 게임</button>
+    </div>
+  </div>
+
+  <div id="modal-overlay" class="modal-overlay">
+    <div class="modal-box">
+      <p id="modal-message" class="pixel-font"></p>
+      <div id="modal-buttons" class="modal-buttons"></div>
+    </div>
+  </div>
+
+<script src="js/reversi.js"></script>
+</body>
+</html>

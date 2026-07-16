@@ -1,0 +1,70 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>지뢰찾기 - PIXEL LAB</title>
+<script src="js/theme.js"></script>
+<link rel="stylesheet" href="css/style.css">
+<style>
+  .stat-row { display:flex; justify-content:center; gap:32px; margin-bottom:10px; font-family:'Press Start 2P',monospace; font-size:13px; flex-wrap:wrap; }
+  .ms-grid { display:grid; gap:2px; margin:0 auto 4px; width:max-content; }
+  .ms-cell {
+    background:var(--surface-2);
+    border:2px solid var(--border);
+    aspect-ratio:1;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    cursor:pointer;
+    user-select:none;
+    font-family:'Press Start 2P', monospace;
+    font-weight:bold;
+  }
+  .ms-cell.revealed { background:var(--surface); cursor:default; }
+  .ms-cell.mine.revealed { background:var(--accent-pink); }
+  .ms-cell.mine.revealed.boom { background:#ff2d55; }
+  .ms-cell:hover:not(.revealed) { filter:brightness(1.2); }
+</style>
+</head>
+<body>
+  <header class="site-header">
+    <a href="game.html" class="btn back-btn">◀ 목록으로</a>
+    <h1 class="page-title">💣 지뢰찾기</h1>
+    <button id="theme-toggle" class="theme-toggle" aria-label="테마 전환"></button>
+  </header>
+  <div class="container">
+    <div class="panel" style="text-align:center; font-size:18px;">
+      🖱️ 좌클릭: 칸 열기 <span style="color:var(--accent-cyan);">/</span> 우클릭: 깃발 🚩 표시<br>
+      <span style="color:var(--text-dim); font-size:15px;">모든 지뢰를 피해서 나머지 칸을 전부 열면 승리!</span>
+    </div>
+
+    <div class="stat-row">
+      <div>MINES: <span id="mines-left">10</span></div>
+      <div>TIME: <span id="time">0</span>s</div>
+      <div>BEST TIME: <span id="best-time">--</span>s</div>
+    </div>
+    <div style="text-align:center; margin-bottom:16px;">
+      <label>난이도</label>
+      <select id="difficulty">
+        <option value="easy">하 (9 x 9, 지뢰 10개)</option>
+        <option value="medium" selected>중 (16 x 16, 지뢰 40개)</option>
+        <option value="hard">상 (16 x 30, 지뢰 99개)</option>
+      </select>
+      <button class="btn btn-cyan" id="start-btn">게임 시작</button>
+    </div>
+    <div class="game-stage">
+      <div class="ms-grid" id="ms-grid"></div>
+      <div id="game-overlay" class="game-overlay">
+        <div class="panel">
+          <h2 id="overlay-title">게임 오버</h2>
+          <div id="overlay-message" class="pixel-font" style="font-size:14px; color:var(--accent-yellow);"></div>
+          <div id="new-record" class="new-record pixel-font" style="font-size:13px;"></div>
+          <button class="btn btn-cyan" id="restart-btn">다시하기</button>
+        </div>
+      </div>
+    </div>
+  </div>
+<script src="js/minesweeper.js"></script>
+</body>
+</html>

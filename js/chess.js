@@ -26,6 +26,8 @@ function initBoard() {
   lastMove = null;
   capturedByWhite = [];
   capturedByBlack = [];
+  moveCount = 0;
+  previousMode = modeAiEl && modeAiEl.checked ? 'ai' : 'pvp';
   document.getElementById('chess-message').textContent = '';
   document.getElementById('chess-overlay').classList.remove('visible');
   renderCaptured();
@@ -232,6 +234,45 @@ const boardEl = document.getElementById('chess-board');
 const turnLabel = document.getElementById('turn-label');
 const msgEl = document.getElementById('chess-message');
 const vsCpu = { get checked() { return document.getElementById('mode-ai').checked; } };
+const modePvpEl = document.getElementById('mode-pvp');
+const modeAiEl = document.getElementById('mode-ai');
+let moveCount = 0;
+let previousMode = 'pvp';
+
+function showModal(message, buttons) {
+  const overlay = document.getElementById('modal-overlay');
+  const msg = document.getElementById('modal-message');
+  const btnContainer = document.getElementById('modal-buttons');
+  msg.textContent = message;
+  btnContainer.innerHTML = '';
+  buttons.forEach(b => {
+    const btn = document.createElement('button');
+    btn.className = 'btn btn-cyan';
+    btn.textContent = b.label;
+    btn.addEventListener('click', () => {
+      overlay.classList.remove('open');
+      b.onClick();
+    });
+    btnContainer.appendChild(btn);
+  });
+  overlay.classList.add('open');
+}
+
+function handleModeChange(e) {
+  if (moveCount > 0) {
+    const requestedValue = e.target.value;
+    showModal('진행 중인 게임이 있습니다. 새 게임을 시작하시겠습니까?', [
+      { label: '새 게임 시작', onClick: () => { previousMode = requestedValue; initBoard(); } },
+      { label: '계속하기', onClick: () => {
+          if (previousMode === 'pvp') modePvpEl.checked = true; else modeAiEl.checked = true;
+        } }
+    ]);
+  } else {
+    previousMode = e.target.value;
+  }
+}
+modePvpEl.addEventListener('change', handleModeChange);
+modeAiEl.addEventListener('change', handleModeChange);
 
 function render() {
   boardEl.innerHTML = '';
@@ -286,9 +327,9 @@ function onSquareClick(r, c) {
   if (selected) {
     const move = legalTargets.find(m => m.r === r && m.c === c);
     if (move) {
-      doMove(selected, move);
+      const from = selected;
       selected = null; legalTargets = [];
-      render();
+      doMove(from, move);
       return;
     }
     if (p && colorOf(p) === turn) {
@@ -314,16 +355,21 @@ function capturedPieceOf(from, to) {
   return board[to.r][to.c];
 }
 
-function doMove(from, to, forcedPromo) {
-  let promoChoice = null;
+function doMove(from, to) {
+  moveCount++;
   if (to.special === 'promo') {
-    if (forcedPromo) {
-      promoChoice = forcedPromo;
-    } else {
-      const choice = window.prompt('프로모션할 기물을 선택하세요 (Q, R, B, N)', 'Q');
-      promoChoice = choice && ['Q','R','B','N'].includes(choice.toUpperCase()) ? choice.toUpperCase() : 'Q';
-    }
+    showModal('프로모션할 기물을 선택하세요', [
+      { label: '퀸', onClick: () => executeMove(from, to, 'Q') },
+      { label: '룩', onClick: () => executeMove(from, to, 'R') },
+      { label: '비숍', onClick: () => executeMove(from, to, 'B') },
+      { label: '나이트', onClick: () => executeMove(from, to, 'N') }
+    ]);
+  } else {
+    executeMove(from, to, null);
   }
+}
+
+function executeMove(from, to, promoChoice) {
   const captured = capturedPieceOf(from, to);
   if (captured) {
     if (isWhite(captured)) capturedByBlack.push(captured);
@@ -336,6 +382,7 @@ function doMove(from, to, forcedPromo) {
   renderCaptured();
   updateTurnLabel();
   checkGameEnd();
+  render();
   if (!gameOver && turn === 'b' && vsCpu.checked) {
     msgEl.textContent = 'AI 계산 중...';
     setTimeout(cpuMove, 400);
@@ -427,8 +474,8 @@ function cpuMove() {
   const state = { board, turn, castling, enPassant };
   const mv = chooseAiMove(state);
   if (!mv) return;
-  doMove(mv.from, mv.to, 'Q');
-  render();
+  moveCount++;
+  executeMove(mv.from, mv.to, 'Q');
 }
 
 document.getElementById('chess-restart').addEventListener('click', initBoard);

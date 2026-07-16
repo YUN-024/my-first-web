@@ -1,0 +1,81 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>2048 - PIXEL LAB</title>
+<script src="js/theme.js"></script>
+<link rel="stylesheet" href="css/style.css">
+<style>
+  .stat-row { display:flex; justify-content:center; gap:32px; margin-bottom:14px; font-family:'Press Start 2P',monospace; font-size:13px; }
+  .controls-row { text-align:center; margin-bottom:14px; }
+  .win-banner {
+    text-align:center; font-size:12px; color:var(--accent-yellow);
+    opacity:0; height:20px; margin-bottom:6px;
+    transition:opacity .3s ease; font-family:'Press Start 2P',monospace;
+  }
+  .win-banner.show { opacity:1; }
+
+  .board-wrap {
+    position:relative; width:100%; max-width:360px; margin:0 auto;
+    touch-action:none; user-select:none; -webkit-user-select:none;
+  }
+  .grid-bg {
+    display:grid; grid-template-columns:repeat(4,1fr); gap:8px; padding:10px;
+    background:var(--surface-2); border:3px solid var(--border); box-shadow:var(--shadow);
+  }
+  .cell-bg { aspect-ratio:1; background:var(--surface); border:2px solid var(--border); }
+  .tiles-layer { position:absolute; inset:0; pointer-events:none; }
+  .tile {
+    position:absolute;
+    display:flex; align-items:center; justify-content:center;
+    font-family:'Press Start 2P', monospace;
+    border:2px solid rgba(0,0,0,0.15);
+    opacity:1;
+    transform:scale(1);
+    transition: left .12s ease, top .12s ease, transform .12s ease, opacity .12s ease;
+  }
+  .tile.tile-spawn { transform:scale(0.3); opacity:0; }
+  .tile.tile-merge { transform:scale(1.14); }
+  .tile.tile-huge { box-shadow: 0 0 8px 2px rgba(255,210,63,0.6); }
+</style>
+</head>
+<body>
+  <header class="site-header">
+    <a href="game.html" class="btn back-btn">◀ 목록으로</a>
+    <h1 class="page-title">🔢 2048</h1>
+    <button id="theme-toggle" class="theme-toggle" aria-label="테마 전환"></button>
+  </header>
+  <div class="container">
+    <div class="panel" style="text-align:center; font-size:18px;">
+      방향키로 타일을 밀면 같은 숫자끼리 합쳐집니다! <span style="color:var(--accent-cyan);">2048</span>을 만들어보세요.<br>
+      <span style="color:var(--text-dim); font-size:15px;">모바일에서는 판을 드래그(스와이프)하세요.</span>
+    </div>
+
+    <div class="stat-row">
+      <div>SCORE: <span id="score">0</span></div>
+      <div>HIGH SCORE: <span id="high-score">0</span></div>
+    </div>
+    <div class="controls-row">
+      <button class="btn btn-cyan" id="new-game-btn">새 게임</button>
+    </div>
+    <div id="win-banner" class="win-banner pixel-font">🎉 2048 달성!</div>
+
+    <div class="game-stage">
+      <div class="board-wrap" id="board-wrap">
+        <div class="grid-bg" id="grid-bg"></div>
+        <div class="tiles-layer" id="tiles-layer"></div>
+      </div>
+      <div id="game-overlay" class="game-overlay">
+        <div class="panel">
+          <h2>게임 오버</h2>
+          <div id="final-score" class="pixel-font" style="font-size:14px; color:var(--accent-yellow);"></div>
+          <div id="new-record" class="new-record pixel-font" style="font-size:13px;"></div>
+          <button class="btn btn-cyan" id="restart-btn">다시하기</button>
+        </div>
+      </div>
+    </div>
+  </div>
+<script src="js/2048.js"></script>
+</body>
+</html>

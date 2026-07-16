@@ -9,8 +9,8 @@
 <style>
   .mole-grid { display:grid; gap:12px; max-width:480px; margin:20px auto; }
   .hole { background:var(--surface-2); border:3px solid var(--border); aspect-ratio:1; display:flex; align-items:center; justify-content:center; cursor:pointer; overflow:hidden; }
-  .mole-emoji { font-size:2.4rem; line-height:1; transform: translateY(100%); transition: transform .15s steps(3); }
-  .mole-emoji.up { transform: translateY(0); }
+  .mole-emoji { font-size:2.4rem; line-height:1; opacity:0; transform: scale(0.2); transition: opacity .15s ease, transform .15s ease; }
+  .mole-emoji.up { opacity:1; transform: scale(1); }
   .stat-row { display:flex; justify-content:center; gap:32px; margin-bottom:10px; font-family:'Press Start 2P',monospace; font-size:13px; }
 </style>
 </head>
@@ -21,6 +21,12 @@
     <button id="theme-toggle" class="theme-toggle" aria-label="테마 전환"></button>
   </header>
   <div class="container">
+    <div class="panel" style="text-align:center; font-size:18px;">
+      💗 하트가 나오면 클릭하세요! <span style="color:var(--accent-cyan);">+1점</span><br>
+      💣 폭탄이 나오면 클릭하지 마세요! <span style="color:var(--accent-pink);">-1점</span><br>
+      <span style="color:var(--text-dim); font-size:15px;">시간이 지날수록 점점 빨라집니다.</span>
+    </div>
+
     <div class="stat-row">
       <div>SCORE: <span id="score">0</span></div>
       <div>TIME: <span id="time">30</span>s</div>

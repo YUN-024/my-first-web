@@ -5,7 +5,6 @@ ctx.imageSmoothingEnabled = false;
 let W = 0, H = 0;
 let stars = [];
 let clouds = [];
-let walker = { x: -20, dir: 1, frame: 0 };
 
 function resize() {
   W = canvas.clientWidth;
@@ -42,20 +41,6 @@ function drawCloud(x, y) {
   drawPixelRect(x - 6, y + 6, 30, 6, c);
 }
 
-function drawWalker(x, y, step) {
-  const cyan = getComputedStyle(document.documentElement).getPropertyValue('--accent-cyan');
-  const pink = getComputedStyle(document.documentElement).getPropertyValue('--accent-pink');
-  drawPixelRect(x, y - 20, 12, 12, cyan);
-  drawPixelRect(x + 2, y - 8, 8, 10, pink);
-  if (step % 2 === 0) {
-    drawPixelRect(x, y + 2, 4, 8, cyan);
-    drawPixelRect(x + 8, y + 2, 4, 6, cyan);
-  } else {
-    drawPixelRect(x, y + 2, 4, 6, cyan);
-    drawPixelRect(x + 8, y + 2, 4, 8, cyan);
-  }
-}
-
 function loop(t) {
   const bg = getComputedStyle(document.documentElement).getPropertyValue('--bg');
   ctx.fillStyle = bg;
@@ -76,13 +61,6 @@ function loop(t) {
 
   const groundY = H - 40;
   drawPixelRect(0, groundY + 20, W, 4, getComputedStyle(document.documentElement).getPropertyValue('--border'));
-
-  walker.x += 0.8 * walker.dir;
-  if (walker.x > W + 20) walker.dir = -1;
-  if (walker.x < -20) walker.dir = 1;
-  walker.frame = Math.floor(t / 150);
-  const drawX = walker.dir === 1 ? walker.x : W - walker.x - 12;
-  drawWalker(drawX, groundY + 18, walker.frame);
 
   requestAnimationFrame(loop);
 }
