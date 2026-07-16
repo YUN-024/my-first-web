@@ -304,6 +304,17 @@ function update() {
   }
 }
 
+function drawNameTag(x, y, text) {
+  ctx.font = "11px 'Silkscreen', monospace";
+  ctx.textAlign = 'center';
+  ctx.textBaseline = 'bottom';
+  ctx.lineWidth = 3;
+  ctx.strokeStyle = 'rgba(0,0,0,0.85)';
+  ctx.strokeText(text, x, y);
+  ctx.fillStyle = '#ffffff';
+  ctx.fillText(text, x, y);
+}
+
 function drawSnakeBody(snake, colorA, colorB, headColor) {
   const segs = getSegments(snake);
   for (let i = segs.length - 1; i >= 0; i--) {
@@ -337,6 +348,7 @@ function draw() {
 
   // player: cyan/pink body, white head (kept unique so it always reads as "you")
   drawSnakeBody(player, cyan, pink, '#ffffff');
+  drawNameTag(player.head.x, player.head.y - SEG_SIZE - 6, nickname);
 }
 
 function loop() {
